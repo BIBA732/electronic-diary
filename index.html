@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Электронный дневник</title>
+    <link rel="stylesheet" href="static/styles/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="static/js/scripts.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Электронный дневник</h1>
+            <nav>
+                <ul>
+                    <li><button class="nav-button" data-section="upload">Загрузить</button></li>
+                    <li><button class="nav-button" data-section="edit-section">Редактировать</button></li>
+                    <li><button class="nav-button" data-section="table-stats">Статистика</button></li>
+                    <li><button class="nav-button" data-section="graph-stats">Графики</button></li>
+                    <li><button class="nav-button" data-section="about">О разработчике</button></li>
+                    <li><button class="nav-button" data-section="help">Помощь</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <!-- Загрузка файлов -->
+        <section id="upload" class="content-section">
+            <div class="section-header">
+                <h2>Загрузить оценки</h2>
+                <p>Загрузите файлы с оценками в формате CSV или TXT</p>
+            </div>
+            <div class="button-container">
+                <input type="file" id="file-input" accept=".csv, .txt" style="display: none;">
+                <button id="upload-button" class="primary-button">Выбрать файл</button>
+                <button id="download-data-button" class="secondary-button">Скачать данные</button>
+            </div>
+            <div id="data-preview" class="preview-container"></div>
+        </section>
+        
+        <!-- Редактирование -->
+        <section id="edit-section" class="content-section">
+            <div class="section-header">
+                <h2>Редактировать журнал</h2>
+                <p>Добавляйте, редактируйте и удаляйте записи учеников</p>
+            </div>
+            
+            <!-- Форма добавления -->
+            <div class="form-container">
+                <h3>Добавить/редактировать ученика</h3>
+                <form id="student-form">
+                    <div class="form-row">
+                        <input type="text" id="student-name" placeholder="ФИО ученика" required>
+                        <input type="text" id="student-class" placeholder="Класс" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="grade-informatics" placeholder="Информатика" min="2" max="5">
+                        <input type="number" id="grade-physics" placeholder="Физика" min="2" max="5">
+                        <input type="number" id="grade-math" placeholder="Математика" min="2" max="5">
+                        <input type="number" id="grade-literature" placeholder="Литература" min="2" max="5">
+                        <input type="number" id="grade-music" placeholder="Музыка" min="2" max="5">
+                    </div>
+                    <button type="button" onclick="addOrUpdateStudent()" class="primary-button">Сохранить ученика</button>
+                </form>
+            </div>
+
+            <!-- Таблица для редактирования -->
+            <div class="edit-table-container">
+                <h3>Текущие данные</h3>
+                <div id="edit-data-preview"></div>
+            </div>
+        </section>
+
+        <!-- Статистика в таблицах -->
+        <section id="table-stats" class="content-section">
+            <div class="section-header">
+                <h2>Статистика успеваемости</h2>
+                <p>Подробная статистика по классам и предметам</p>
+            </div>
+            <div id="stats-container"></div>
+        </section>
+
+        <!-- Графики -->
+        <section id="graph-stats" class="content-section">
+            <div class="section-header">
+                <h2>Визуальная статистика</h2>
+                <p>Графики и диаграммы успеваемости</p>
+            </div>
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Общая успеваемость по предметам</h3>
+                    <canvas id="class-chart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Сравнение классов</h3>
+                    <canvas id="student-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- О разработчике -->
+        <section id="about" class="content-section">
+            <div class="section-header">
+                <h2>О разработчике</h2>
+                <p>Информация о создателе электронного дневника</p>
+            </div>
+            <div class="developer-profile">
+                <div class="developer-main-info">
+                    <div class="developer-text">
+                        <h3>Бабахина Надежда Александровна</h3>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <span class="text">miumiumiamia333444@gmail.com</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="developer-photo">
+                        <img src="static/images/картинка.jpg" alt="Фото разработчика">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Помощь -->
+        <section id="help" class="content-section">
+            <div class="section-header">
+                <h2>Помощь и инструкции</h2>
+                <p>Всё, что нужно знать о работе с электронным дневником</p>
+            </div>
+            <div class="help-content">
+                <div class="help-section">
+                    <h3>Загрузить оценки</h3>
+                    <p>На этой вкладке вы можете загрузить файлы с оценками учеников. Поддерживаются форматы CSV и TXT. Файл должен содержать данные в следующем формате:</p>
+                    <ul>
+                        <li>ФИО ученика</li>
+                        <li>Класс</li>
+                        <li>Оценки по предметам (Информатика, Физика, Математика, Литература, Музыка)</li>
+                    </ul>
+                </div>
+
+                <div class="help-section">
+                    <h3>Редактировать журнал</h3>
+                    <p>Здесь вы можете вручную добавлять, редактировать и удалять записи учеников. Используйте форму для добавления новых данных или редактируйте существующие записи прямо в таблице.</p>
+                </div>
+
+                <div class="help-section">
+                    <h3>Статистика</h3>
+                    <p>В этом разделе представлена подробная статистика успеваемости:</p>
+                    <ul>
+                        <li>Общая статистика по всем классам</li>
+                        <li>Детальная статистика по каждому классу отдельно</li>
+                        <li>Средние баллы, медианы и распределение оценок</li>
+                    </ul>
+                </div>
+
+                <div class="help-section">
+                    <h3>Графики</h3>
+                    <p>Визуальное представление статистики в виде графиков и диаграмм. Помогает быстро оценить общую картину успеваемости.</p>
+                </div>
+
+                <div class="help-section">
+                    <h3>О разработчике</h3>
+                    <p>Информация о создателе системы, контактные данные для связи и обратной связи.</p>
+                </div>
+
+                <div class="help-section">
+                    <h3>Помощь</h3>
+                    <p>Этот раздел, где вы сейчас находитесь. Содержит подробные инструкции по работе со всеми функциями электронного дневника.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
